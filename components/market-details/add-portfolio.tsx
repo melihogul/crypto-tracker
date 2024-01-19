@@ -27,24 +27,24 @@ export const AddPortfolio = ({data}: {data: MarketDataType}) => {
     const onBuy = (values: z.infer<typeof AddPortfolioSchema>) => {
         startTransition(() => {
             addPortfolio(values, coinId, "BUY")
-            .then((data) => toast.success(data.success))
-            .catch((data) => toast.error(data.error))
+            .then(() => toast.success("You have successfully added!"))
+            .catch(() => toast.error("You must login for access the portfolio features."))
         })
     }
 
     const onSell = (values: z.infer<typeof AddPortfolioSchema>) => {
         startTransition(() => {
             addPortfolio(values, coinId, "SELL")
-            .then((data) => toast.success(data.success))
-            .catch((data) => toast.error(data.error))
+            .then(() => toast.success("You have successfully added!"))
+            .catch(() => toast.error("You must login for access the portfolio features."))
         })
     }
     
   return (
     <Tabs defaultValue="buy">
-        <TabsList className="px-2 w-[400px] container mx-auto flex justify-center items-center mt-3">
-          <TabsTrigger value="buy" className="w-full">BUY</TabsTrigger>
-          <TabsTrigger value="sell" className="w-full">SELL</TabsTrigger>
+        <TabsList className="px-2 w-auto sm:w-[400px] container mx-10 sm:mx-auto flex justify-center items-center mt-3 gap-x-1">
+          <TabsTrigger value="buy" className="w-full text-emerald-400">BUY</TabsTrigger>
+          <TabsTrigger value="sell" className="w-full text-rose-400">SELL</TabsTrigger>
         </TabsList>
         <TabsContent value="buy">
         <Form {...form}>

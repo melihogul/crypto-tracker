@@ -10,7 +10,7 @@ export const addPortfolio = async(values: z.infer<typeof AddPortfolioSchema>, co
     const user = await currentUser()
 
     if(!user) {
-        return {error: "Unauthorized"}
+        throw new Error("User not found")
     }
     
     const validatedFields = AddPortfolioSchema.safeParse(values)
@@ -21,7 +21,7 @@ export const addPortfolio = async(values: z.infer<typeof AddPortfolioSchema>, co
 
     const {quantity, price} = validatedFields.data
 
-    await db.auditLog.create({
+    const createAuditLog = await db.auditLog.create({
         data: {
             action: action,
             price,
@@ -31,5 +31,5 @@ export const addPortfolio = async(values: z.infer<typeof AddPortfolioSchema>, co
         }
     })
    
-    return {success: "You have successfully added!"}
+    return createAuditLog
 }
