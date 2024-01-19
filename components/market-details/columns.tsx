@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Info, MoreHorizontal, Plus } from "lucide-react"
+import { ArrowUpDown, Info, MoreHorizontal, Plus, Star } from "lucide-react"
 import {format} from "date-fns"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,8 +15,41 @@ import { MarketDataType } from "@/types"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import { Avatar, AvatarImage } from "../ui/avatar"
 import { UseDetails } from "@/hooks/use-details"
+import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer"
+import { AddPortfolio } from "./add-portfolio"
 
 export const columns: ColumnDef<MarketDataType>[] = [
+  {
+    accessorKey: "roi",
+    header: undefined,
+    cell: () => {
+      return(
+        <div className="flex text-center justify-end">
+          <Star className="w-[13px] h-[13px] text-muted-foreground cursor-pointer" />
+        </div>
+      )
+    }
+  },
+  {
+    accessorKey: "market_cap_rank",
+    header: ({ column }) => {
+        return (
+          <div
+            className="flex cursor-pointer text-center items-center ml-2 select-none"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            #
+          </div>
+        )
+    },
+    cell: ({row}) => {
+      return(
+        <div className="ml-2 text-gray-800">
+          {row.original.market_cap_rank}
+        </div>
+      )
+    }
+  },
   {
     accessorKey: "image",
     header: undefined,
@@ -36,7 +69,7 @@ export const columns: ColumnDef<MarketDataType>[] = [
     header: ({ column }) => {
         return (
           <div
-            className="flex cursor-pointer text-center items-center"
+            className="flex cursor-pointer text-center items-center select-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Name
@@ -47,7 +80,7 @@ export const columns: ColumnDef<MarketDataType>[] = [
   },
   {
     accessorKey: "current_price",
-    header: () => <div>Last Price</div>,
+    header: () => <div className="select-none">Price</div>,
     cell: ({ row }) => {
         const price = parseFloat(row.getValue("current_price"))
         
@@ -81,6 +114,7 @@ export const columns: ColumnDef<MarketDataType>[] = [
       const coin = row.original
       const details = UseDetails()
       return (
+        <Drawer>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -89,9 +123,11 @@ export const columns: ColumnDef<MarketDataType>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="flex gap-x-1">
-              <Plus className="w-4 h-4 text-muted-foreground" />
-              Add portfolio
+            <DropdownMenuItem className="flex gap-x-1" asChild>
+              <DrawerTrigger>
+                <Plus className="w-4 h-4 text-muted-foreground" />
+                Add portfolio
+              </DrawerTrigger>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -101,7 +137,11 @@ export const columns: ColumnDef<MarketDataType>[] = [
               <p>View Details</p>
             </DropdownMenuItem>
           </DropdownMenuContent>
+          <DrawerContent>
+            <AddPortfolio data={coin} />
+          </DrawerContent>
         </DropdownMenu>
+        </Drawer>
       )
     },
   },

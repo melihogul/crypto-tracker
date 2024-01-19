@@ -54,3 +54,20 @@ model PasswordResetToken {
 
   @@unique([email, token])
 }
+
+enum ACTION {
+  BUY
+  SELL
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+  action ACTION
+  quantity Float
+  price Float
+  userId String
+  coinId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -6,6 +6,7 @@ import { ModalProvider } from '@/components/providers/modal-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
 import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
+import { Toaster } from 'sonner'
 
 const font = Poppins({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default async function RootLayout({
       <html lang="en">
         <body className={font.className}>
             <QueryProvider>
+              <Toaster />
               <Navbar />
               <ModalProvider />
               {children}

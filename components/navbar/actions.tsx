@@ -23,7 +23,10 @@ export const Actions = async() => {
           </LoginButton>
         )}
         {user && (
-          <UserButton />
+          <div className="flex justify-center items-center gap-x-3 select-none">
+            <p className="bg-slate-200 text-gray-700 p-2 rounded-md">{user.name}</p>
+            <UserButton />
+          </div>
         )}
       </div>
     </div>

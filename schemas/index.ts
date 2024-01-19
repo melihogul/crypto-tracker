@@ -59,3 +59,8 @@ export const RegisterSchema = z.object({
         message: "Name is required"
     })
 })
+
+export const AddPortfolioSchema = z.object({
+    price: z.coerce.number(),
+    quantity: z.coerce.number()
+})

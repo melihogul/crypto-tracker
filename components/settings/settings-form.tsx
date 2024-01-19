@@ -149,6 +149,7 @@ export const SettingsForm = () => {
                     <FormLabel>Email</FormLabel>
                     <Input
                     value={user.email || undefined}
+                    readOnly
                     disabled
                     />
                   </FormItem>
