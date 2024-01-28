@@ -61,6 +61,19 @@ export const RegisterSchema = z.object({
 })
 
 export const AddPortfolioSchema = z.object({
-    price: z.coerce.number(),
-    quantity: z.coerce.number()
+  quantity: z.coerce.number().min(0.00000000000000000000000000000000000000000000000000000000000000000000001, {
+    message: "enter the quantity"
+  }),
+  price: z.coerce.number().min(0.00000000000000000000000000000000000000000000000000000000000000000000001, {
+    message: "enter the price"
+  }),
+})
+
+export const EditTransactionSchema = z.object({
+  quantity: z.coerce.number().min(0.00000000000000000000000000000000000000000000000000000000000000000000001, {
+    message: "enter the quantity"
+  }),
+  price: z.coerce.number().min(0.00000000000000000000000000000000000000000000000000000000000000000000001, {
+    message: "enter the price"
+  }),
 })

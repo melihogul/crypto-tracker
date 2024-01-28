@@ -1,13 +1,11 @@
 "use client"
 
-import { GetMarketData } from "@/lib/get-full-data"
+import { GetMarketData } from "@/lib/get-data"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 
 export default function MarketDataTable() {
-    const { data: PureData, isLoading, error } = GetMarketData()
-
-    const data = PureData?.map((dt) => dt)
+    const { data, isLoading, error } = GetMarketData()
 
     if(isLoading) {
       return(

@@ -1,22 +1,14 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Info, MoreHorizontal, Plus, Star } from "lucide-react"
+import { ArrowUpDown, Info, Star } from "lucide-react"
+import { MdArrowDropUp, MdArrowDropDown } from "react-icons/md";
 import {format} from "date-fns"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { MarketDataType } from "@/types"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
-import { Avatar, AvatarImage } from "../ui/avatar"
-import { UseDetails } from "@/hooks/use-details"
-import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer"
-import { AddPortfolio } from "./add-portfolio"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import { MarketDetailsItem } from "./market-details-item";
 
 export const columns: ColumnDef<MarketDataType>[] = [
   {
@@ -77,29 +69,59 @@ export const columns: ColumnDef<MarketDataType>[] = [
           </div>
         )
     },
+    cell: ({row}) => {
+      const {name, symbol} = row.original
+      return(
+        <div className="flex items-center gap-x-2">
+          <p>{name}</p>
+          <p className="uppercase text-muted-foreground text-xs">{symbol}</p>
+        </div>
+      )
+    }
   },
   {
     accessorKey: "current_price",
-    header: () => <div className="select-none">Price</div>,
+    header: ({column}) => {
+      return(
+        <div
+        className="select-none cursor-pointer text-right"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Price
+        </div>
+      )
+    },
     cell: ({ row }) => {
-        const price = parseFloat(row.getValue("current_price"))
-        
+        const price = row.original.current_price
         const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
         }).format(price)
+        const newPrice = price > 1 ? formatted : `$${price}`
+
+        const isContainMinus = price.toString().search("-") > 0
         
-        const data = row.original
+        function formatPrice(oldPrice: string) {
+            let [before, after] = oldPrice.split("e-");
+            
+            let newPrice = before.replace(".", "");
+        
+            newPrice = "0." + "0".repeat(Number(after) - 1) + newPrice;
+            return newPrice;
+        }
+        
+        const lastUpdated = row.original.last_updated
+
         return(
-            <div className="font-medium">
+            <div className="font-medium text-right">
                 <TooltipProvider>
                 <Tooltip>
-                    <TooltipTrigger className="cursor-default">${price}</TooltipTrigger>
+                    <TooltipTrigger className="cursor-default">{isContainMinus ? `$${formatPrice(price.toString())}` : newPrice}</TooltipTrigger>
                     <TooltipContent className="flex flex-col justify-center items-center">
                     Last update
                     <div className="flex items-center justify-center flex-col">
-                    <p>{format(data.last_updated, "p")}</p>
-                    <p>{format(data.last_updated, "P")}</p>
+                    <p>{format(lastUpdated, "p")}</p>
+                    <p>{format(lastUpdated, "P")}</p>
                     </div>
                     </TooltipContent>
                 </Tooltip>
@@ -109,39 +131,94 @@ export const columns: ColumnDef<MarketDataType>[] = [
       },
   },
   {
+    accessorKey: "price_change_percentage_24h",
+    header: ({column}) => {
+      return(
+        <div
+        className="cursor-pointer select-none text-right"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          24h%
+        </div>
+      )
+    },
+    cell: ({row}) => {
+      const data = row.original
+      const price = data.price_change_percentage_24h.toLocaleString().startsWith("-") ? parseFloat(data.price_change_percentage_24h.toString().substring(1)).toFixed(2) : data.price_change_percentage_24h.toFixed(2)
+      return(
+        <div className="flex justify-end gap-x-1">
+          <div className={cn(
+                "flex justify-center items-center gap-x-2",
+                data.price_change_percentage_24h.toLocaleString().startsWith("-")
+                ? "text-rose-500"
+                : "text-emerald-500"
+          )}>
+            <p>
+              {
+              data.price_change_percentage_24h
+              .toLocaleString()
+              .startsWith("-")
+                ? (
+                  <MdArrowDropDown className="h-5 w-5" />
+                ) : (
+                  <MdArrowDropUp className="h-5 w-5" />
+                )
+              }
+            </p>
+            {price}%
+          </div>
+        </div>
+      )
+    }
+  },
+  {
+    accessorKey: "market_cap",
+    header: ({column}) => {
+      return(
+        <div className="flex gap-x-1 justify-end">
+          <p
+          className="select-none cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+            Market Cap
+          </p>
+          <div className="hidden lg:flex">
+            <TooltipProvider>
+              <Tooltip>
+                  <TooltipTrigger className="cursor-default">
+                    <Info className="w-[14px] h-[14px]" />
+                  </TooltipTrigger>
+                  <TooltipContent className="flex flex-col justify-center items-center w-80 py-4 gap-y-2 cursor-text bg-gray-200 text-gray-700">
+                  <p>The total market value of a cryptocurrency&apos;s circulating supply. It is analogous to the free-float capitalization in the stock market.</p>
+                  <p>Market Cap = Current Price x Circulating Supply.</p>
+                  </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+        const marketCap = row.original.market_cap
+        const formatted = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 0
+        }).format(marketCap)
+
+        return(
+            <div className="font-medium text-right">
+              {formatted}
+            </div>
+        )
+      },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const coin = row.original
-      const details = UseDetails()
+      
       return (
-        <Drawer>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Actions</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem className="flex gap-x-1" asChild>
-              <DrawerTrigger>
-                <Plus className="w-4 h-4 text-muted-foreground" />
-                Add portfolio
-              </DrawerTrigger>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-            onClick={() => details.onOpen(coin.id)}
-            className="flex gap-x-1 text-xs text-muted-foreground cursor-pointer">
-              <Info className="w-3 h-3" />
-              <p>View Details</p>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-          <DrawerContent>
-            <AddPortfolio data={coin} />
-          </DrawerContent>
-        </DropdownMenu>
-        </Drawer>
+        <MarketDetailsItem coin={coin} />
       )
     },
   },

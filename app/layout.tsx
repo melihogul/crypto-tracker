@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 import './globals.css'
 import { Navbar } from '@/components/navbar'
-import { ModalProvider } from '@/components/providers/modal-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
 import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
@@ -32,7 +31,6 @@ export default async function RootLayout({
             <QueryProvider>
               <Toaster />
               <Navbar />
-              <ModalProvider />
               {children}
             </QueryProvider>
         </body>

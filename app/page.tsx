@@ -1,21 +1,20 @@
 import { auth } from "@/auth";
 import MarketDataTable from "@/components/market-details";
-import MyPortfolio from "@/components/my-portfolio";
+import Assets from "@/components/portfolio/assets";
+import ViewTransActions from "@/components/portfolio/view-transactions";
+import { TestComp } from "@/components/test";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { db } from "@/lib/db";
+import { getAuditLogs } from "@/lib/get-audit-logs";
 
 export default async function Home() {
   const session = await auth()
 
-  const auditLogs = await db.auditLog.findMany({
-    where: {
-        userId: session?.user.id
-    }
-  })
-  
+  const auditLogs = await getAuditLogs(session?.user.id)
+
   return (
     <main className="container mx-auto">
-      <Tabs defaultValue="marketDetails">
+      <TestComp />
+      <Tabs defaultValue={session ? "myPortfolio" : "marketDetails"}>
         <TabsList className="px-2">
           <TabsTrigger value="marketDetails">Market Details</TabsTrigger>
           <TabsTrigger value="myPortfolio" disabled={!session}>My Portfolio</TabsTrigger>
@@ -25,15 +24,8 @@ export default async function Home() {
         </TabsContent>
         <TabsContent value="myPortfolio">
           <div>
-            {auditLogs.map((log) => (
-              <div key={log.id} className="flex flex-col gap-2 bg-gray-500 p-4 mt-2 rounded-md w-fit">
-                <p>{log.action}</p>
-                <p>{log.coinId}</p>
-                <p>{log.price}</p>
-                <p>{log.quantity}</p>
-              </div>
-            ))}
-            <MyPortfolio />
+            <Assets data={auditLogs}/>
+            <ViewTransActions data={auditLogs} />
           </div>
         </TabsContent>
       </Tabs>

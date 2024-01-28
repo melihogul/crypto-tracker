@@ -6,6 +6,6 @@ async function fetcher(key: string) {
 }
 
 export const GetMarketData = () => {
-    const { data, isLoading, error } = useSWR('/api/market-data/', fetcher, { refreshInterval: 600000 })
+    const { data, isLoading, error } = useSWR('/api/market-data/', fetcher)
     return {data, isLoading, error}
 }

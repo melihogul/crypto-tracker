@@ -1,29 +1,11 @@
 "use client"
 
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Button } from "../ui/button"
+import { ColumnDef, ColumnFiltersState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, } from "@tanstack/react-table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import React from "react"
-import { Input } from "../ui/input"
-import { Skeleton } from "../ui/skeleton"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Wallet } from "lucide-react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -53,25 +35,24 @@ export function DataTable<TData, TValue>({
       columnFilters,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10
+      }
+    },
   })
 
   return (
     <div>
-        <div className="flex items-center py-4">
-            <Input
-            placeholder="Filter coins..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-            />
+        <div className="flex gap-x-2 bg-muted p-4 rounded-md mb-2 select-none">
+          <Wallet />
+          <p>Assets</p>
         </div>
-        <div className="rounded-md border">
+        <div className="rounded-md bg-muted">
         <Table>
             <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow key={headerGroup.id} className="border-none">
                 {headerGroup.headers.map((header) => {
                     return (
                     <TableHead key={header.id}>
@@ -93,6 +74,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className="cursor-pointer rounded-2xl border-none"
                 >
                     {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -111,7 +93,8 @@ export function DataTable<TData, TValue>({
             </TableBody>
         </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div
+        className="flex items-center justify-end space-x-2 py-4">
           <Button
             variant="outline"
             size="sm"
@@ -135,21 +118,14 @@ export function DataTable<TData, TValue>({
 
 DataTable.Skeleton = function DataTableSkeleton() {
   return(
-      <div className="flex flex-col gap-y-[2px] mt-6 relative w-full justify-center items-center">
-          <div className="w-full max-w-[1335px]">
-            <Skeleton className="h-[38px] max-w-[383px] mb-[11px] rounded-md place-self-start" />
+      <div className="flex flex-col gap-y-[2px] relative w-full justify-center items-center">
+          <div className="w-full max-w-[1335px] mb-[6px]">
+            <Skeleton className="h-[56px] w-full rounded-md place-self-start" />
           </div>
-          <Skeleton className="h-[42px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
-          <Skeleton className="h-[55px] w-full max-w-[1335px] rounded-md" />
+          <Skeleton className="h-[600px] w-full max-w-[1335px] rounded-md" />
+          <div className="w-full flex justify-end mb-4">
+            <Skeleton className="h-[32px] mt-[14px] w-[138px] max-w-[1335px] rounded-md" />
+          </div>
       </div>
   )
 }

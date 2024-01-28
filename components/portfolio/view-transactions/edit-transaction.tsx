@@ -1,48 +1,48 @@
 import * as z from "zod"
-import { MarketDataType } from "@/types"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { AddPortfolioSchema } from "@/schemas";
+import { MarketDataType, OneAuditLogType } from "@/types"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { AddPortfolioSchema, EditTransactionSchema } from "@/schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
 import { Loader2 } from "lucide-react";
-import { addPortfolio } from "@/actions/add-portfolio";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { editTransaction } from "@/actions/edit-transaction";
 
-export const AddPortfolio = ({data}: {data: MarketDataType}) => {
-    const coinId = data.id
-    const coinName = data.symbol
+export const EditTransaction = ({data}: {data: OneAuditLogType}) => {
+    const id = data.id
+
     const [isPending, startTransition] = useTransition()
     
-    const form = useForm<z.infer<typeof AddPortfolioSchema>>({
-        resolver: zodResolver(AddPortfolioSchema),
+    const form = useForm<z.infer<typeof EditTransactionSchema>>({
+        resolver: zodResolver(EditTransactionSchema),
         defaultValues: {
-            quantity: undefined,
-            price: data.current_price,
+            quantity: data.quantity,
+            price: data.price,
         }
     })
     
-    const onBuy = (values: z.infer<typeof AddPortfolioSchema>) => {
+    const onBuy = (values: z.infer<typeof EditTransactionSchema>) => {
         startTransition(() => {
-            addPortfolio(values, coinId, coinName, "BUY")
-            .then(() => toast.success("You have successfully added!"))
+            editTransaction(values, id, "BUY")
+            .then(() => toast.success("You have successfully updated!"))
             .catch(() => toast.error("Something went wrong!"))
         })
     }
 
-    const onSell = (values: z.infer<typeof AddPortfolioSchema>) => {
+    const onSell = (values: z.infer<typeof EditTransactionSchema>) => {
         startTransition(() => {
-            addPortfolio(values, coinId, coinName, "SELL")
-            .then(() => toast.success("You have successfully added!"))
+            editTransaction(values, id, "SELL")
+            .then(() => toast.success("You have successfully updated!"))
             .catch(() => toast.error("Something went wrong!"))
         })
     }
     
   return (
-    <Tabs defaultValue="buy">
+    <Tabs defaultValue={data.action.toLowerCase()}>
         <TabsList className="px-2 w-auto sm:w-[400px] container mx-10 sm:mx-auto flex justify-center items-center mt-3 gap-x-1">
           <TabsTrigger value="buy" className="w-full text-emerald-400">BUY</TabsTrigger>
           <TabsTrigger value="sell" className="w-full text-rose-400">SELL</TabsTrigger>
@@ -60,7 +60,7 @@ export const AddPortfolio = ({data}: {data: MarketDataType}) => {
                         </FormLabel>
                         <Input
                         readOnly
-                        value={data.name + ` (${data.symbol})`}
+                        value={`${data.coinName.toUpperCase()}`}
                         />
                     </FormItem>
                     <FormField
@@ -101,7 +101,7 @@ export const AddPortfolio = ({data}: {data: MarketDataType}) => {
                     disabled={isPending}
                     type="submit"
                     >
-                        {isPending ? <Loader2 className="text-muted-foreground animate-spin" /> : "Add"}
+                        {isPending ? <Loader2 className="text-muted-foreground animate-spin" /> : "Confirm Edit"}
                     </Button>
                 </div>
             </form>
@@ -120,7 +120,7 @@ export const AddPortfolio = ({data}: {data: MarketDataType}) => {
                         </FormLabel>
                         <Input
                         readOnly
-                        value={data.name + ` (${data.symbol})`}
+                        value={`${data.coinName.toUpperCase()}`}
                         />
                     </FormItem>
                     <FormField
@@ -161,7 +161,7 @@ export const AddPortfolio = ({data}: {data: MarketDataType}) => {
                     disabled={isPending}
                     type="submit"
                     >
-                        {isPending ? <Loader2 className="text-muted-foreground animate-spin" /> : "Add"}
+                        {isPending ? <Loader2 className="text-muted-foreground animate-spin" /> : "Confirm Edit"}
                     </Button>
                 </div>
             </form>

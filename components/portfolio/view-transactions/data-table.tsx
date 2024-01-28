@@ -20,10 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Button } from "../ui/button"
 import React from "react"
-import { Input } from "../ui/input"
-import { Skeleton } from "../ui/skeleton"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ScanSearch } from "lucide-react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -52,26 +52,25 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       rowSelection,
-    }
+    },
+    initialState: {
+      pagination: {
+        pageSize: 5
+      }
+    },
   })
 
   return (
     <div>
-        <div className="flex items-center py-4">
-            <Input
-            placeholder="Filter coins..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-            />
+        <div className="flex gap-x-2 bg-muted p-4 rounded-md mb-2 select-none">
+          <ScanSearch />
+          <p>View Transactions</p>
         </div>
-        <div className="rounded-md border">
+        <div className="rounded-md bg-muted">
         <Table>
             <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow key={headerGroup.id} className="border-none">
                 {headerGroup.headers.map((header) => {
                     return (
                     <TableHead key={header.id}>
@@ -93,6 +92,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className="hover:bg-gray-300 cursor-pointer rounded-2xl border-none"
                 >
                     {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -111,7 +111,7 @@ export function DataTable<TData, TValue>({
             </TableBody>
         </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-center space-x-2 py-4">
           <Button
             variant="outline"
             size="sm"
