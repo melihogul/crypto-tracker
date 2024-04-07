@@ -7,11 +7,11 @@ import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import CoinInfo from "./coin-info"
 import { MarketDataType } from "@/types"
 
-interface MarketDetailsItemProps {
+interface ActionsRowProps {
     coin: MarketDataType
 }
 
-export const MarketDetailsItem = ({coin}: MarketDetailsItemProps) => {
+export const ActionsRow = ({coin}: ActionsRowProps) => {
     const user = useCurrentUser()
     
   return (

@@ -6,6 +6,7 @@ import { QueryProvider } from '@/components/providers/query-provider'
 import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
 import { Toaster } from 'sonner'
+import { cn } from '@/lib/utils'
 
 const font = Poppins({
   subsets: ["latin"],
@@ -27,7 +28,9 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en">
-        <body className={font.className}>
+        <body className={cn(
+          font.className,
+        )}>
             <QueryProvider>
               <Toaster />
               <Navbar />

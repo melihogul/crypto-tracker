@@ -13,7 +13,6 @@ export default async function Home() {
 
   return (
     <main className="container mx-auto">
-      <TestComp />
       <Tabs defaultValue={session ? "myPortfolio" : "marketDetails"}>
         <TabsList className="px-2">
           <TabsTrigger value="marketDetails">Market Details</TabsTrigger>
@@ -24,6 +23,7 @@ export default async function Home() {
         </TabsContent>
         <TabsContent value="myPortfolio">
           <div>
+            <TestComp />
             <Assets data={auditLogs}/>
             <ViewTransActions data={auditLogs} />
           </div>

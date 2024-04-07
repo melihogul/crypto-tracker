@@ -11,11 +11,11 @@ import { deleteManyPortfolio } from "@/actions/delete-many-portfolio"
 import { toast } from "sonner"
 import { AssetsType } from "@/types"
 
-interface AssetsItemProps {
+interface ActionsRowProps {
     data: AssetsType
 }
 
-export const AssetsItem = ({data}: AssetsItemProps) => {
+export const ActionsRow = ({data}: ActionsRowProps) => {
     const [isPending, startTransition] = useTransition()
     const closeRef = useRef<ElementRef<"button">>(null)
     const onClick = () => {

@@ -8,7 +8,7 @@ import { MarketDataType } from "@/types"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { MarketDetailsItem } from "./market-details-item";
+import { ActionsRow } from "./actions-row";
 
 export const columns: ColumnDef<MarketDataType>[] = [
   {
@@ -218,7 +218,7 @@ export const columns: ColumnDef<MarketDataType>[] = [
       const coin = row.original
       
       return (
-        <MarketDetailsItem coin={coin} />
+        <ActionsRow coin={coin} />
       )
     },
   },

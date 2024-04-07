@@ -11,11 +11,13 @@ import { Loader2 } from "lucide-react";
 import { addPortfolio } from "@/actions/add-portfolio";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { useProfit } from "@/hooks/use-profit";
 
 export const AddPortfolio = ({data}: {data: MarketDataType}) => {
     const coinId = data.id
     const coinName = data.symbol
     const [isPending, startTransition] = useTransition()
+    const {deleteEverything} = useProfit(state => state)
     
     const form = useForm<z.infer<typeof AddPortfolioSchema>>({
         resolver: zodResolver(AddPortfolioSchema),

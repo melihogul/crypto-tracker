@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { OneAuditLogType } from "@/types"
-import { TransactionsItem } from "./transactions-item"
+import { ActionsRow } from "./actions-row"
 
 export const columns: ColumnDef<OneAuditLogType>[] = [
   {
@@ -115,7 +115,7 @@ export const columns: ColumnDef<OneAuditLogType>[] = [
     id: "actions",
     cell: ({row}) => {
         return(
-          <TransactionsItem data={row.original} />
+          <ActionsRow data={row.original} />
         )
       },
   },

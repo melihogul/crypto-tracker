@@ -42,24 +42,17 @@ export const getProfitPerCoin = (auditLogs: AuditLogsType, currentPrice: number)
     })).map((item) => item.profit).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
 
     return profit
+}
 
-    // const buyProfit = auditLogs.filter((item) => item.action === "BUY").map((item) => ({
-    //   id: item.id,
-    //   quantity: item.quantity,
-    //   price: item.price,
-    //   action: item.action,
-    //   profit: item.quantity * (currentPrice - item.price)
-    // })).map((item) => item.profit).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+export const getPercentProfit = (auditLogs: AuditLogsType, currentPrice: number) => {
+    const profit = auditLogs.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+      action: item.action,
+      profitPercentage: ((item.quantity * (item.action === "BUY" ? (currentPrice - item.price) : (item.price - currentPrice))) / item.price) * 100
+    }))
+    // .map((item) => item.profitPercentage).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
 
-    // const sellProfit = auditLogs.filter((item) => item.action === "SELL").map((item) => ({
-    //   id: item.id,
-    //   quantity: item.quantity,
-    //   price: item.price,
-    //   action: item.action,
-    //   profit: item.quantity * (item.price - currentPrice)
-    // })).map((item) => item.profit).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-    // const totalProfit = buyProfit + sellProfit
-    
-    // return totalProfit
+    return profit
 }

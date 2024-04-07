@@ -7,11 +7,9 @@ import { format } from "date-fns"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md"
-import { getProfitPerCoin } from "@/lib/get-audit-logs"
-import { AssetsItem } from "./assets-item"
-import { useProfit } from "@/hooks/use-profit"
-import { useEffect, useState } from "react"
+import { getPercentProfit, getProfitPerCoin } from "@/lib/get-audit-logs"
 import ProfitRow from "./profit-row"
+import { ActionsRow } from "./actions-row"
 
 export const columns: ColumnDef<AssetsType>[] = [
   {
@@ -172,6 +170,28 @@ export const columns: ColumnDef<AssetsType>[] = [
     }
   },
   {
+    id: "avgBuyPrice",
+    header: () => {
+      return(
+        <div className="select-none cursor-pointer text-right">Avg. Buy Price</div>
+      )
+    },
+    cell: ({row}) => {
+      const auditLogs = row.original.auditLogs
+      const totalPrice = auditLogs.filter((item) => item.action === "BUY").map((item) => (item.price * item.quantity)).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      const totalAmount = auditLogs.filter((item) => item.action === "BUY").map((item) => item.quantity).reduce((sum, item) => sum + item)
+      const avgBuyPrice = totalPrice / totalAmount
+
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(avgBuyPrice)
+      return(
+        <div className="text-right">{formatted}</div>
+      )
+    }
+  },
+  {
     id: "profit",
     header: () => {
       return (
@@ -187,8 +207,18 @@ export const columns: ColumnDef<AssetsType>[] = [
       const profit = getProfitPerCoin(auditLogs, currentPrice)
       const isLoss = profit.toString().startsWith("-")
 
+      const buyQuantity = auditLogs.filter((item) => item.action === "BUY").map((item) => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      const sellQuantity = auditLogs.filter((item) => item.action === "SELL").map((item) => item.quantity).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      const holdings = buyQuantity - sellQuantity
+      const holdingsWorth = parseFloat((holdings * row.original.current_price).toFixed(2))
+
+      const totalCost = auditLogs.filter((item) => item.action === "BUY").map(item => item.price * item.quantity).reduce((sum, item) => sum + item)
+      const profitPercentage = ((holdingsWorth - totalCost) / totalCost) * 100
+      console.log("holding", holdingsWorth);
+      console.log("totalcost", totalCost);
+      console.log("profitpercentage", profitPercentage)
       return(
-        <ProfitRow profit={profit} isLoss={isLoss} />
+        <ProfitRow profit={profit} isLoss={isLoss} profitPercentage={profitPercentage} />
       )
     }
   },
@@ -196,11 +226,11 @@ export const columns: ColumnDef<AssetsType>[] = [
     id: "actions",
     cell: ({row}) => {
       const data = row.original
-        return(
-          <>
-              <AssetsItem data={data} />
-          </>
-        )
+      return(
+        <>
+          <ActionsRow data={data} />
+        </>
+      )
       },
   },
 ]

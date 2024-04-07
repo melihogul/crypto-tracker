@@ -9,11 +9,11 @@ import { OneAuditLogType } from "@/types"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
 import { EditTransaction } from "./edit-transaction"
 
-interface TransactionsItemProps {
+interface ActionsRowProps {
     data: OneAuditLogType
 }
 
-export const TransactionsItem = ({data}: TransactionsItemProps) => {
+export const ActionsRow = ({data}: ActionsRowProps) => {
     const [isPending, startTransition] = useTransition()
     const closeRef = useRef<ElementRef<"button">>(null)
     
