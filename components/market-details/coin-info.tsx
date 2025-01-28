@@ -26,7 +26,13 @@ const CoinInfo = ({ data }: { data: MarketDataType }) => {
       <div className="mt-3 text-sm text-muted-foreground">
         <div className="flex gap-x-1">
           <p className="font-bold select-none">Name:</p>
-          <Image alt={data.name} src={data.image} height={20} width={20} />
+          <Image
+            alt={data.name}
+            src={data.image}
+            height={20}
+            width={20}
+            unoptimized
+          />
           {data.name}
           <kbd className="h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground opacity-100">
             {data.symbol.toUpperCase()}
