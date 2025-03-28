@@ -78,7 +78,7 @@ export const SettingsForm = () => {
                       <Input
                         {...field}
                         placeholder="John Doe"
-                        disabled={isPending}
+                        disabled={true}
                       />
                     </FormControl>
                     <FormMessage />
@@ -97,7 +97,7 @@ export const SettingsForm = () => {
                           <Input
                             {...field}
                             placeholder="john@doe.com"
-                            disabled={isPending}
+                            disabled={true}
                             type="email"
                           />
                         </FormControl>
@@ -115,7 +115,7 @@ export const SettingsForm = () => {
                           <Input
                             {...field}
                             placeholder="******"
-                            disabled={isPending}
+                            disabled={true}
                             type="password"
                           />
                         </FormControl>
@@ -133,7 +133,7 @@ export const SettingsForm = () => {
                           <Input
                             {...field}
                             placeholder="******"
-                            disabled={isPending}
+                            disabled={true}
                             type="password"
                           />
                         </FormControl>
@@ -161,7 +161,7 @@ export const SettingsForm = () => {
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button type="submit" disabled={isPending} className="w-full">
+            <Button type="submit" disabled={true} className="w-full">
               Save
             </Button>
           </form>
